@@ -369,10 +369,18 @@ private:
 };
 
 typedef GenericMap<Pair<Full<string, string> > > StringMap;
-template <typename T, typename V> using NonPooledMap = GenericMap<Pair<NonPooled<T, V>>>;
-template <typename T, typename V> using LeftPooledMap = GenericMap<Pair<Left<T, V>>>;
-template <typename T, typename V> using RightPooledMap = GenericMap<Pair<Right<T, V>>>;
-template <typename T, typename V> using FullPooledMap = GenericMap<Pair<Full<T, V>>>;
+
+template <typename T, typename V, typename KeyComparator = DefaultComparator<T>>
+using NonPooledMap = GenericMap<Pair<NonPooled<T, V>>, KeyComparator>;
+
+template <typename T, typename V, typename KeyComparator = DefaultComparator<T>>
+using LeftPooledMap = GenericMap<Pair<Left<T, V>>, KeyComparator>;
+
+template <typename T, typename V, typename KeyComparator = DefaultComparator<T>>
+using RightPooledMap = GenericMap<Pair<Right<T, V>>, KeyComparator>;
+
+template <typename T, typename V, typename KeyComparator = DefaultComparator<T>>
+using FullPooledMap = GenericMap<Pair<Full<T, V>>, KeyComparator>;
 
 }
 
