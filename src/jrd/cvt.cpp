@@ -39,7 +39,7 @@
 #include "../jrd/jrd.h"
 #include "../jrd/req.h"
 #include "../jrd/val.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "../jrd/intl.h"
 #include "../common/gdsassert.h"
 #include "../common/TimeZoneUtil.h"

@@ -39,7 +39,7 @@
 #include "../jrd/jrd.h"
 #include "../jrd/svc.h"
 #include "../jrd/constants.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "../jrd/license.h"
 #include "../jrd/err_proto.h"
 #include "../yvalve/gds_proto.h"

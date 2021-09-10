@@ -33,8 +33,7 @@
 #include "firebird/Interface.h"
 
 #include "memory_routines.h"
-#include "gen/iberror.h"
-#include "gen/msg_facs.h"
+#include "iberror.h"
 #include "../yvalve/YObjects.h"
 #include "firebird/impl/sqlda_pub.h"
 #include "../common/gdsassert.h"
@@ -107,6 +106,25 @@ namespace Why {
 };
 
 namespace {
+
+static const struct {
+	int fac_code;
+	const char* facility;
+} facilities[] = {
+	{FB_IMPL_MSG_FACILITY_JRD,			"JRD       "},
+	{FB_IMPL_MSG_FACILITY_GFIX,			"GFIX      "},
+	{FB_IMPL_MSG_FACILITY_DSQL,			"DSQL      "},
+	{FB_IMPL_MSG_FACILITY_DYN,			"DYN       "},
+	{FB_IMPL_MSG_FACILITY_GBAK,			"GBAK      "},
+	{FB_IMPL_MSG_FACILITY_SQLERR,		"SQLERR    "},
+	{FB_IMPL_MSG_FACILITY_GSEC,			"GSEC      "},
+	{FB_IMPL_MSG_FACILITY_GSTAT,		"GSTAT     "},
+	{FB_IMPL_MSG_FACILITY_FBSVCMGR,		"FBSVCMGR  "},
+	{FB_IMPL_MSG_FACILITY_UTL,			"UTL       "},
+	{FB_IMPL_MSG_FACILITY_NBACKUP,		"NBACKUP   "},
+	{FB_IMPL_MSG_FACILITY_FBTRACEMGR,	"FBTRACEMGR"},
+	{0, NULL}
+};
 
 // Class-wrapper around external SQLDA.
 // Can be used as local variable, but do it with care
@@ -939,7 +957,7 @@ namespace Why
 						{
 							bool found = false;
 
-							const _facilities* facs = facilities;
+							const auto* facs = facilities;
 							const int fac_code = GET_FACILITY(*s);
 
 							while (facs->facility)

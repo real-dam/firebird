@@ -18,9 +18,8 @@ runAndCheckExit() {
     fi
 }
 
-runAndCheckExit "Restore messages database" "bin/gbak -rep msg.gbak msg.fdb"
 runAndCheckExit "Build messages file (firebird.msg)" bin/build_file
 runAndCheckExit "Restore security database" "bin/gbak -rep security5.gbak security5.fdb"
 runAndCheckExit "Restore examples database (employee)" "bin/gbak -rep examples/empbuild/employee.gbak examples/empbuild/employee.fdb"
 
-rm -f msg.gbak msg.fdb security5.gbak examples/empbuild/employee.gbak AfterUntar.sh
+rm -f security5.gbak examples/empbuild/employee.gbak AfterUntar.sh

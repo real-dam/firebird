@@ -40,7 +40,7 @@
 #include "../jrd/sort.h"
 #include "../jrd/lls.h"
 #include "../jrd/tra.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "../jrd/sbm.h"
 #include "../jrd/exe.h"
 #include "../jrd/scl.h"
@@ -209,7 +209,7 @@ bool IDX_check_master_types(thread_db* tdbb, index_desc& idx, jrd_rel* partner_r
 	// get the description of the partner index
 	const bool ok = BTR_description(tdbb, partner_relation, root, &partner_idx, idx.idx_primary_index);
 	CCH_RELEASE(tdbb, &window);
-	
+
 	if (!ok)
 		BUGCHECK(175);			// msg 175 partner index description not found
 
@@ -1106,7 +1106,7 @@ static bool cmpRecordKeys(thread_db* tdbb,
  **************************************
  *
  * Functional description
- *	Compare indexed fields in two records. Records could belong to different 
+ *	Compare indexed fields in two records. Records could belong to different
  *  relations but set of indexed fields to compare should be equal.
  *
  **************************************/
@@ -1231,11 +1231,11 @@ static idx_e check_duplicates(thread_db* tdbb,
 			if (cmpRecordKeys(tdbb, rpb.rpb_record, relation_1, insertion_idx,
 							  record, relation_2, record_idx))
 			{
-				// When check foreign keys in snapshot or read consistency transaction, 
-				// ensure that master record is visible in transaction context and still 
+				// When check foreign keys in snapshot or read consistency transaction,
+				// ensure that master record is visible in transaction context and still
 				// satisfy foreign key constraint.
 
-				if (is_fk && 
+				if (is_fk &&
 					(!(transaction->tra_flags & TRA_read_committed) ||
 					(transaction->tra_flags & TRA_read_consistency)))
 				{

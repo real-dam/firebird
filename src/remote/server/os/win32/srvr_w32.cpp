@@ -86,7 +86,7 @@
 #include <windows.h>
 
 #include "fb_exception.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "../common/ThreadStart.h"
 #include "../common/os/fbsyslog.h"
 #include "../common/isc_proto.h"

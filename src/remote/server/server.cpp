@@ -60,7 +60,7 @@
 #include "../common/config/config.h"
 #include "../common/utils_proto.h"
 #ifdef DEBUG
-#include "gen/iberror.h"
+#include "iberror.h"
 #endif
 #include "../common/classes/FpeControl.h"
 #include "../remote/proto_proto.h"	// xdr_protocol_overhead()

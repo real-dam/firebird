@@ -56,7 +56,7 @@
 #include "../dsql/utld_proto.h"
 #include "../common/dsc_proto.h"
 #include "../yvalve/why_proto.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "../common/StatusArg.h"
 
 using namespace Jrd;

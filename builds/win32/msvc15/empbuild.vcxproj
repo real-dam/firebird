@@ -180,7 +180,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\gen\examples\empbuild.c" />
+    <ClCompile Include="..\..\..\gen\examples\empbuild.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="yvalve.vcxproj">

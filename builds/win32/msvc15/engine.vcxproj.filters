@@ -1016,9 +1016,6 @@
     <ClInclude Include="..\..\..\src\jrd\CryptoManager.h">
       <Filter>Header files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\include\gen\iberror.h">
-      <Filter>Header files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\dsql\BlrDebugWriter.h">
       <Filter>Header files</Filter>
     </ClInclude>

@@ -33,7 +33,7 @@
 #include <string.h>
 #include "../jrd/jrd.h"
 #include "../jrd/sort.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "../jrd/intl.h"
 #include "../common/TimeZoneUtil.h"
 #include "../common/gdsassert.h"

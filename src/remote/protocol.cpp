@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "../remote/remote.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "../common/sdl.h"
 #include "../common/gdsassert.h"
 #include "../remote/parse_proto.h"

@@ -1994,9 +1994,9 @@ void MET_load_trigger(thread_db* tdbb,
 		// if there is an ignore permission flag, see if it is legit
 		if ((TRG.RDB$FLAGS & TRG_ignore_perm) && !verify_TRG_ignore_perm(tdbb, trigger_name))
 		{
-			fb_msg_format(NULL, JRD_BUGCHK, 304, sizeof(errmsg),
+			fb_msg_format(NULL, FB_IMPL_MSG_FACILITY_JRD_BUGCHK, 304, sizeof(errmsg),
 							errmsg, MsgFormat::SafeArg() << trigger_name.c_str());
-			ERR_log(JRD_BUGCHK, 304, errmsg);
+			ERR_log(FB_IMPL_MSG_FACILITY_JRD_BUGCHK, 304, errmsg);
 
 			trig_flags &= ~TRG_ignore_perm;
 		}

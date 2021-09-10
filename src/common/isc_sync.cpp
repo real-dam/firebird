@@ -50,7 +50,7 @@
 #include <sys/pstat.h>
 #endif
 
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "../yvalve/gds_proto.h"
 #include "../common/isc_proto.h"
 #include "../common/os/isc_i_proto.h"

@@ -70,7 +70,7 @@ UTILITIES_GEN_FILES= $(UTILITIES_EPP_FILES:%.epp=$(GEN_ROOT)/utilities/%.cpp)
 SECURITY_EPP_FILES=	security.epp
 SECURITY_GEN_FILES=	$(SECURITY_EPP_FILES:%.epp=$(GEN_ROOT)/utilities/%.cpp)
 
-MSG_EPP_FILES=	build_file.epp change_msgs.epp check_msgs.epp enter_msgs.epp load.epp modify_msgs.epp
+MSG_EPP_FILES=	change_msgs.epp check_msgs.epp enter_msgs.epp load.epp modify_msgs.epp
 MSG_GEN_FILES=	$(MSG_EPP_FILES:%.epp=$(GEN_ROOT)/msgs/%.cpp)
 
 GPRE_FLAGS= -r -m -z -n

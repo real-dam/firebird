@@ -36,7 +36,7 @@
 #include "../jrd/ods.h"
 #include "../jrd/os/pio.h"
 #include "../jrd/cch.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "../jrd/lls.h"
 #include "../jrd/sdw.h"
 #include "../jrd/tra.h"
@@ -4213,10 +4213,10 @@ static LockState lock_buffer(thread_db* tdbb, BufferDesc* bdb, const SSHORT wait
 
 		FbStatusVector* const status = tempStatus.restore();
 
-		fb_msg_format(0, JRD_BUGCHK, 216, sizeof(errmsg), errmsg,
+		fb_msg_format(0, FB_IMPL_MSG_FACILITY_JRD_BUGCHK, 216, sizeof(errmsg), errmsg,
 			MsgFormat::SafeArg() << bdb->bdb_page.getPageNum() << (int) page_type);
 		ERR_append_status(status, Arg::Gds(isc_random) << Arg::Str(errmsg));
-		ERR_log(JRD_BUGCHK, 216, errmsg);	// // msg 216 page %ld, page type %ld lock denied
+		ERR_log(FB_IMPL_MSG_FACILITY_JRD_BUGCHK, 216, errmsg);	// // msg 216 page %ld, page type %ld lock denied
 
 		// CCH_unwind releases all the BufferDesc's and calls ERR_punt()
 		// ERR_punt will longjump.
@@ -4256,10 +4256,10 @@ static LockState lock_buffer(thread_db* tdbb, BufferDesc* bdb, const SSHORT wait
 
 	FbStatusVector* const status = tempStatus.restore();
 
-	fb_msg_format(0, JRD_BUGCHK, 215, sizeof(errmsg), errmsg,
+	fb_msg_format(0, FB_IMPL_MSG_FACILITY_JRD_BUGCHK, 215, sizeof(errmsg), errmsg,
 					MsgFormat::SafeArg() << bdb->bdb_page.getPageNum() << (int) page_type);
 	ERR_append_status(status, Arg::Gds(isc_random) << Arg::Str(errmsg));
-	ERR_log(JRD_BUGCHK, 215, errmsg);	// msg 215 page %ld, page type %ld lock conversion denied
+	ERR_log(FB_IMPL_MSG_FACILITY_JRD_BUGCHK, 215, errmsg);	// msg 215 page %ld, page type %ld lock conversion denied
 
 	CCH_unwind(tdbb, true);
 

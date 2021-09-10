@@ -28,7 +28,7 @@
 
 #include "firebird.h"
 #include "firebird/Interface.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "../common/StatusHolder.h"
 #include "../common/classes/fb_atomic.h"
 #include "../common/classes/alloc.h"

@@ -44,7 +44,6 @@ TMP_ROOT=$(ROOT)/temp/$(TARGET)
 GEN_ROOT=$(ROOT)/gen
 SRC_ROOT=$(ROOT)/src
 BLD_ROOT=$(ROOT)/builds
-LNG_ROOT=$(ROOT)/lang_helpers
 EXA_ROOT=$(ROOT)/examples
 
 IsCross=@IS_CROSS@
@@ -417,17 +416,8 @@ GPRE_CURRENT    = $(RBIN)/gpre_current$(EXEC_EXT)
 
 
 # From msgs
-CHECK_MESSAGES  = $(BIN)/check_messages$(EXEC_EXT)
 BUILD_FILE      = $(BIN)/build_file$(EXEC_EXT)
 FIREBIRD_MSG    = $(FIREBIRD)/firebird.msg
-
-ENTER_MESSAGES  = $(BIN)/enter_messages$(EXEC_EXT)
-MODIFY_MESSAGES = $(BIN)/modify_messages$(EXEC_EXT)
-CHANGE_MESSAGES = $(BIN)/change_messages$(EXEC_EXT)
-
-fr_FR_MSG       = $(FIREBIRD)/fr_FR.msg
-de_DE_MSG       = $(FIREBIRD)/de_DE.msg
-ja_JP_MSG       = $(FIREBIRD)/ja_JP.msg
 
 
 #Platform Manager

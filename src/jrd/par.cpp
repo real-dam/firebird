@@ -58,6 +58,7 @@
 #include "../yvalve/gds_proto.h"
 #include "../jrd/met_proto.h"
 #include "../jrd/par_proto.h"
+#include "../common/MsgUtil.h"
 #include "../common/utils_proto.h"
 #include "../jrd/RecordSourceNodes.h"
 #include "../jrd/SysFunction.h"
@@ -71,8 +72,6 @@
 
 using namespace Jrd;
 using namespace Firebird;
-
-#include "gen/codetext.h"
 
 
 static NodeParseFunc blr_parsers[256] = {NULL};
@@ -725,14 +724,7 @@ SLONG PAR_symbol_to_gdscode(const Firebird::string& name)
  *
  **************************************/
 
-	for (int i = 0; codes[i].code_number; ++i)
-	{
-		if (name == codes[i].code_string) {
-			return codes[i].code_number;
-		}
-	}
-
-	return 0;
+	return MsgUtil::getCodeByName(name.c_str());
 }
 
 

@@ -40,7 +40,7 @@
 #include "../jrd/ods.h"
 #include "../jrd/lck.h"
 #include "../jrd/cch.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "../jrd/cch_proto.h"
 #include "../jrd/err_proto.h"
 #include "../common/isc_proto.h"

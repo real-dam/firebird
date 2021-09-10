@@ -3999,7 +3999,7 @@ static processing_state copy_table(TEXT* source,
 
 	if (EXTRACT_list_table(source, destination, domain_flag, -1))
 	{
-		IUTILS_msg_get(NOT_FOUND_MSG, errbuf, SafeArg() << source);
+		IUTILS_msg_get(NOT_FOUND, errbuf, SafeArg() << source);
 		STDERROUT(errbuf);
 		fclose(isqlGlob.Out);
 	}
@@ -6339,7 +6339,7 @@ static processing_state help(const TEXT* what)
 	{
 		HLP_FRONTEND,			// Frontend commands:
 		HLP_BLOBDMP,			// BLOBDUMP <blobid> <file>	-- dump BLOB to a file
-		HLP_BLOBVIEW,			// BLOBVIEW <blobid>		-- view BLOB in text editor
+		HLP_BLOBED,				// BLOBVIEW <blobid>		-- view BLOB in text editor
 		HLP_EDIT,				// EDIT	 [<filename>]		-- edit SQL script file and execute
 		HLP_EDIT2,				// EDIT						-- edit current command buffer and execute
 		HLP_HELP,				// HELP						-- display this menu

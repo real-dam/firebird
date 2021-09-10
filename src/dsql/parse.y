@@ -81,7 +81,7 @@
 #include <string.h>
 #include <stdarg.h>
 
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "../dsql/dsql.h"
 #include "ibase.h"
 #include "../jrd/flags.h"

@@ -90,7 +90,7 @@
 #include "../jrd/lck.h"
 
 // Error codes
-#include "gen/iberror.h"
+#include "iberror.h"
 
 struct dsc;
 

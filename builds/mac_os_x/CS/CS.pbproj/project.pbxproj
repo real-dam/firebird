@@ -5765,11 +5765,6 @@
 			path = build_file.cpp;
 			refType = 4;
 		};
-		F616C8070200B0D001EF0ADE = {
-			isa = PBXFileReference;
-			path = build_file.epp;
-			refType = 4;
-		};
 		F616C8080200B0D001EF0ADE = {
 			isa = PBXFileReference;
 			path = change_msgs.cpp;
@@ -7370,12 +7365,12 @@
 		};
 		F616C91E0200B0D001EF0ADE = {
 			isa = PBXFileReference;
-			path = empbuild.c;
+			path = empbuild.cpp;
 			refType = 4;
 		};
 		F616C91F0200B0D001EF0ADE = {
 			isa = PBXFileReference;
-			path = empbuild.e;
+			path = empbuild.epp;
 			refType = 4;
 		};
 		F616C9200200B0D001EF0ADE = {

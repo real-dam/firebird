@@ -108,9 +108,9 @@ API_PAS_FILE=$(SRC_ROOT)/include/gen/Firebird.pas
 MISC=$(SRC_ROOT)/misc
 PAS_ROOT=$(MISC)/pascal
 PASCAL_SOURCES=$(wildcard $(PAS_ROOT)/*)
-TMP_FUNCS=$(TMP_ROOT)/func.pas
+TMP_FUNCS_PAS=$(TMP_ROOT)/func.pas
 XPB_CONSTS=$(SRC_ROOT)/include/firebird/impl/consts_pub.h
-ERR_CONSTS=$(ROOT)/lang_helpers/gds_codes.pas
+ERR_CONSTS_PAS=$(SRC_ROOT)/misc/pascal/gds_codes.pas
 RPL_AWK=$(GEN_ROOT)/def_awk
 RPL_AWK_SRC=$(MISC)/def_awk.c
 RPL_GREP=$(GEN_ROOT)/isc_grep
@@ -125,10 +125,10 @@ $(API_H_FILE): $(IDL_FILE)
 # This way firebird.pas can be created not using own mini-utilities.
 # They were added to be able to build on windows, this code is left for reference.
 #
-#$(TMP_FUNCS): $(PASCAL_SOURCES) $(XPB_CONSTS) $(ERR_CONSTS)
-#	cat $(PAS_ROOT)/fb_get_master_interface.pas >$(TMP_FUNCS)
-#	awk -f $(PAS_ROOT)/Pascal.Constants.awk <$(XPB_CONSTS) >>$(TMP_FUNCS)
-#	grep '[[:space:]]isc_' $(ERR_CONSTS) >>$(TMP_FUNCS)
+#$(TMP_FUNCS_PAS): $(PASCAL_SOURCES) $(XPB_CONSTS) $(ERR_CONSTS_PAS)
+#	cat $(PAS_ROOT)/fb_get_master_interface.pas >$(TMP_FUNCS_PAS)
+#	awk -f $(PAS_ROOT)/Pascal.Constants.awk <$(XPB_CONSTS) >>$(TMP_FUNCS_PAS)
+#	grep '[[:space:]]isc_' $(ERR_CONSTS_PAS) >>$(TMP_FUNCS_PAS)
 #
 
 $(RPL_AWK):	$(RPL_AWK_SRC)
@@ -137,17 +137,22 @@ $(RPL_AWK):	$(RPL_AWK_SRC)
 $(RPL_GREP): $(RPL_GREP_SRC)
 	$(CC) -o $@ $^
 
-$(TMP_FUNCS): $(PASCAL_SOURCES) $(XPB_CONSTS) $(ERR_CONSTS) $(RPL_AWK) $(RPL_GREP)
-	cp $(PAS_ROOT)/fb_get_master_interface.pas $(TMP_FUNCS)
-	$(RPL_AWK) <$(XPB_CONSTS) >>$(TMP_FUNCS)
-	$(RPL_GREP) <$(ERR_CONSTS) >>$(TMP_FUNCS)
+$(TMP_ROOT)/iberror.pas: $(BUILD_FILE) $(ERR_CONSTS_PAS) $(SRC_ROOT)/include/firebird/impl/msg/*.h
+	$(BUILD_FILE) -p $(TMP_ROOT)/iberror_codes.pas
+	cp $(ERR_CONSTS_PAS) $(TMP_ROOT)/iberror.pas
+	cat $(TMP_ROOT)/iberror_codes.pas >> $(TMP_ROOT)/iberror.pas
 
-$(API_PAS_FILE): $(IDL_FILE) $(PASCAL_SOURCES) $(TMP_FUNCS)
+$(TMP_FUNCS_PAS): $(PASCAL_SOURCES) $(XPB_CONSTS) $(TMP_ROOT)/iberror.pas $(RPL_AWK) $(RPL_GREP)
+	cp $(PAS_ROOT)/fb_get_master_interface.pas $(TMP_FUNCS_PAS)
+	$(RPL_AWK) <$(XPB_CONSTS) >>$(TMP_FUNCS_PAS)
+	$(RPL_GREP) <$(TMP_ROOT)/iberror.pas >>$(TMP_FUNCS_PAS)
+
+$(API_PAS_FILE): $(IDL_FILE) $(PASCAL_SOURCES) $(TMP_FUNCS_PAS)
 	$(CLOOP) $(IDL_FILE) pascal $@ Firebird --uses SysUtils \
 		--interfaceFile $(PAS_ROOT)/Pascal.interface.pas \
     	--implementationFile $(PAS_ROOT)/Pascal.implementation.pas \
     	--exceptionClass FbException \
-    	--functionsFile $(TMP_FUNCS) \
+    	--functionsFile $(TMP_FUNCS_PAS) \
     	--prefix I
 
 updateBuildNum : $(SRC_ROOT)/jrd/build_no.h $(GEN_ROOT)/Make.Version
@@ -266,7 +271,7 @@ $(RE2_LIB):	$(RE2_Objs)
 # main build target for both debug and release builds
 #
 
-.PHONY:	cross1 cross2 boot yvalve engine fbintl gpre utilities plugins rest codes examples cross_rest
+.PHONY:	cross1 cross2 boot yvalve engine fbintl gpre utilities plugins rest examples cross_rest
 
 master_process:
 	ln -sf $(SRC_ROOT)/include/gen/autoconfig.auto $(SRC_ROOT)/include/gen/autoconfig.h
@@ -286,10 +291,6 @@ master_process:
 # even if gpre itself was not rebuilt
 	-$(RM) $(GPRE_CURRENT)
 	(cd $(BIN); $(LN) $(notdir $(GPRE)) $(notdir $(GPRE_CURRENT)))
-ifeq ($(IsDeveloper), Y)
-# In developer mode we must regenerate various files in include/gen
-	$(MAKE) codes
-endif
 	$(MAKE) plugins
 	$(MAKE) examples
 	$(MAKE) rest
@@ -415,7 +416,7 @@ $(GPRE):	$(GPRE_Objects) $(COMMON_LIB)
 SECURITY_FDB = $(FIREBIRD)/security5.fdb
 SECURITY_TMP = security.tmp
 
-databases:		yachts.lnk msg.timestamp $(SECURITY_FDB)
+databases:		yachts.lnk $(SECURITY_FDB)
 
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(FIREBIRD)/lib
 
@@ -442,13 +443,6 @@ security.fdb:	$(SRC_ROOT)/dbs/security.sql
 	$(CHMOD) a=rw $(SECURITY_TMP)
 	$(CP) $(SECURITY_TMP) $@
 	$(RUN_GFIX) -write sync $@
-
-msg.timestamp:	$(MSG_FILES)
-	-$(RM) msg.fdb
-	echo create database \'msg.fdb\'\; | $(RUN_ISQL)
-	$(RUN_GFIX) -write async msg.fdb
-	for sql in $(MSG_FILES); do (echo $$sql; $(RUN_ISQL) -i $$sql msg.fdb) || exit; done
-	$(TOUCH) $@
 
 
 .PHONY:	ibutil udfsupport
@@ -607,33 +601,18 @@ $(COMPAT_SQL):	$(SRC_COMPAT_SQL)
 	cp $^ $@
 
 #___________________________________________________________________________
-# codes - developers change them sometimes
-#
-
-.PHONY: gen_codes
-CODES = $(BIN)/codes$(EXEC_EXT)
-
-codes:	gen_codes
-
-gen_codes:	$(CODES) msg.timestamp
-	$(CODES) $(SRC_ROOT)/include/gen $(LNG_ROOT)
-
-$(CODES):	$(CODES_Objects) $(COMMON_LIB)
-	$(EXE_LINK) $(EXE_LINK_OPTIONS) $^ -o $@ $(FIREBIRD_LIBRARY_LINK) $(LINK_LIBS) $(call LINK_DARWIN_RPATH,..)
-
-#___________________________________________________________________________
 # all the rest we need to build
 #
 
 .PHONY:	message_file tzdata gbak_files
 
-FDB_FILES := $(ROOT)/gen/msg.fdb $(SECURITY_FDB) $(FIREBIRD)/examples/empbuild/employee.fdb
-GBAK_FILES := $(FDB_FILES:.fdb=.gbak) $(FIREBIRD)/msg.gbak
+FDB_FILES := $(SECURITY_FDB) $(FIREBIRD)/examples/empbuild/employee.fdb
+GBAK_FILES := $(FDB_FILES:.fdb=.gbak)
 GBAK_FILES := $(subst Native,$(TARGET),$(GBAK_FILES))
 
 rest:	message_file tzdata
 
-cross_rest:	gbak_files
+cross_rest:
 	$(MAKE) $(BUILD_FILE)
 
 examples: include_generic
@@ -642,9 +621,9 @@ examples: include_generic
 
 message_file:	$(FIREBIRD_MSG)
 
-$(FIREBIRD_MSG):	$(BUILD_FILE) msg.timestamp
-	$(BUILD_FILE) -d msg.fdb -f $@
-	$(CHMOD_6) $@
+$(FIREBIRD_MSG) $(FIREBIRD)/include/firebird/impl/iberror_c.h:	$(BUILD_FILE)
+	$(BUILD_FILE) -f $(FIREBIRD_MSG) -c $(FIREBIRD)/include/firebird/impl/iberror_c.h
+	$(CHMOD_6) $(FIREBIRD_MSG)
 
 tzdata: $(FIREBIRD)/tzdata
 
@@ -653,13 +632,10 @@ $(FIREBIRD)/tzdata: $(ROOT)/extern/icu/tzdata/le.zip
 	mkdir -p $(FIREBIRD)/tzdata
 	unzip -o $(ROOT)/extern/icu/tzdata/le.zip -d $(FIREBIRD)/tzdata
 
-$(BUILD_FILE):	$(BUILD_Objects) $(COMMON_LIB)
-	$(EXE_LINK) $(EXE_LINK_OPTIONS) $(LSB_UNDEF) $^ -o $@ $(FIREBIRD_LIBRARY_LINK) $(LINK_LIBS) $(call LINK_DARWIN_RPATH,..)
+$(BUILD_FILE):	$(BUILD_Objects)
+	$(EXE_LINK) $(EXE_LINK_OPTIONS) $(LSB_UNDEF) $^ -o $@
 
 gbak_files: $(GBAK_FILES)
-
-$(GEN_ROOT)/$(TARGET)/firebird/msg.gbak:	$(ROOT)/gen/msg.gbak
-	cp $^ $@
 
 #---------------------------------------------------------------------------
 
@@ -683,7 +659,7 @@ include_generic: $(INCLUDE_DEST)/ib_util.h  \
 
 OtherDistribHeaders = extlib/ib_util.h \
                       yvalve/perf.h  \
-                      include/gen/iberror.h \
+                      include/iberror.h \
 					  include/ibase.h
 
 SRC_OtherDistribHeaders = $(addprefix $(SRC_ROOT)/, $(OtherDistribHeaders))
@@ -734,7 +710,7 @@ clean_vers:
 
 clean_misc:
 	$(RM) security.tmp test.header.txt
-	$(RM) $(TMP_FUNCS) $(RPL_AWK) $(RPL_GREP)
+	$(RM) $(TMP_FUNCS_PAS) $(RPL_AWK) $(RPL_GREP)
 
 
 ifeq ($(EDITLINE_FLG),Y)
@@ -755,7 +731,7 @@ clean_config clean_all: clean clean_makefiles
 	-$(MAKE) -C $(ROOT)/extern/btyacc distclean
 
 clean_dbs:
-	$(RM) *.fdb *.FDB msg.timestamp
+	$(RM) *.fdb *.FDB
 	$(RM) yachts.lnk
 
 

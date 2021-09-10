@@ -55,7 +55,7 @@
 #include "../common/classes/RefMutex.h"
 #include "../common/os/os_utils.h"
 #include "../common/os/fbsyslog.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 
 #ifdef USE_VALGRIND
 #include <valgrind/memcheck.h>

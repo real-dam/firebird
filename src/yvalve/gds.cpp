@@ -36,6 +36,7 @@
 //#define ISC_TIME_SECONDS_PRECISION_SCALE	-4
 
 #include "firebird.h"
+#include "firebird/impl/msg_helper.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -93,9 +94,7 @@
 
 #include "../common/config/config.h"
 
-#include "gen/sql_code.h"
-#include "gen/sql_state.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "ibase.h"
 
 #include "firebird/impl/blr.h"
@@ -121,7 +120,62 @@ static char* fb_prefix = NULL;
 static char* fb_prefix_lock = NULL;
 static char* fb_prefix_msg = NULL;
 
-#include "gen/msgs.h"
+#define FB_IMPL_MSG_NO_SYMBOL(facility, number, text)
+
+#define FB_IMPL_MSG_SYMBOL(facility, number, symbol, text)
+
+#define FB_IMPL_MSG(facility, number, symbol, sqlCode, sqlClass, sqlSubClass, text) \
+	{ENCODE_ISC_MSG(number, FB_IMPL_MSG_FACILITY_##facility), text},
+
+static const struct {
+	SLONG code_number;
+	const SCHAR *code_text;
+} messages[] = {
+	#include "firebird/impl/msg/all.h"
+	{0, nullptr}
+};
+
+#undef FB_IMPL_MSG_NO_SYMBOL
+#undef FB_IMPL_MSG_SYMBOL
+#undef FB_IMPL_MSG
+
+#define FB_IMPL_MSG_NO_SYMBOL(facility, number, text)
+
+#define FB_IMPL_MSG_SYMBOL(facility, number, symbol, text)
+
+#define FB_IMPL_MSG(facility, number, symbol, sqlCode, sqlClass, sqlSubClass, text) \
+	{ENCODE_ISC_MSG(number, FB_IMPL_MSG_FACILITY_##facility), sqlClass sqlSubClass},
+
+static const struct {
+	SLONG gds_code;
+	const char* sql_state;
+} sql_states[] = {
+	#include "firebird/impl/msg/all.h"
+	{0, nullptr}
+};
+
+#undef FB_IMPL_MSG_NO_SYMBOL
+#undef FB_IMPL_MSG_SYMBOL
+#undef FB_IMPL_MSG
+
+#define FB_IMPL_MSG_NO_SYMBOL(facility, number, text)
+
+#define FB_IMPL_MSG_SYMBOL(facility, number, symbol, text)
+
+#define FB_IMPL_MSG(facility, number, symbol, sqlCode, sqlClass, sqlSubClass, text) \
+	{ENCODE_ISC_MSG(number, FB_IMPL_MSG_FACILITY_##facility), sqlCode},
+
+static const struct {
+	SLONG gds_code;
+	SSHORT sql_code;
+} sql_codes[] = {
+	#include "firebird/impl/msg/all.h"
+	{0, 0}
+};
+
+#undef FB_IMPL_MSG_NO_SYMBOL
+#undef FB_IMPL_MSG_SYMBOL
+#undef FB_IMPL_MSG
 
 const SLONG GENERIC_SQLCODE		= -999;
 
@@ -2225,13 +2279,13 @@ SLONG API_ROUTINE gds__sqlcode(const ISC_STATUS* status_vector)
 
 				if (gdscode)
 				{
-					for (int i = 0; gds__sql_code[i].gds_code; ++i)
+					for (int i = 0; sql_codes[i].gds_code; ++i)
 					{
-						if (gdscode == gds__sql_code[i].gds_code)
+						if (gdscode == sql_codes[i].gds_code)
 						{
-							if (gds__sql_code[i].sql_code != GENERIC_SQLCODE)
+							if (sql_codes[i].sql_code != GENERIC_SQLCODE)
 							{
-								sqlcode = gds__sql_code[i].sql_code;
+								sqlcode = sql_codes[i].sql_code;
 								have_sqlcode = true;
 							}
 							break;
@@ -2360,11 +2414,11 @@ void API_ROUTINE fb_sqlstate(char* sqlstate, const ISC_STATUS* status_vector)
 
 					// implement a binary search for array gds__sql_state[]
 					int first = 0;
-					int last = FB_NELEM(gds__sql_states) - 1;
+					int last = FB_NELEM(sql_states) - 1;
 					while (first <= last)
 					{
 						const int mid = (first + last) / 2;
-						const SLONG new_code = gds__sql_states[mid].gds_code;
+						const SLONG new_code = sql_states[mid].gds_code;
 						if (gdscode > new_code)
 						{
 							first = mid + 1;
@@ -2379,7 +2433,7 @@ void API_ROUTINE fb_sqlstate(char* sqlstate, const ISC_STATUS* status_vector)
 
 							// we get 00000 for info messages like "Table %"
 							// these are completely ignored
-							const char* new_state = gds__sql_states[mid].sql_state;
+							const char* new_state = sql_states[mid].sql_state;
 							if (strcmp("00000", new_state) != 0)
 							{
 								fb_utils::copy_terminate(sqlstate, new_state, FB_SQLSTATE_SIZE);

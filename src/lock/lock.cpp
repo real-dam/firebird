@@ -43,7 +43,7 @@
 #include "../common/ThreadStart.h"
 #include "../jrd/jrd.h"
 #include "../jrd/Attachment.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "../yvalve/gds_proto.h"
 #include "../common/gdsassert.h"
 #include "../common/isc_proto.h"

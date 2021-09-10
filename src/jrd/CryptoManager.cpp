@@ -28,7 +28,7 @@
 
 #include "firebird.h"
 #include "firebird/Interface.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "../jrd/CryptoManager.h"
 
 #include "../common/classes/alloc.h"

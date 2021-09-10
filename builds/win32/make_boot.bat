@@ -27,6 +27,8 @@ for %%v in ( alice auth burp dsql gpre isql jrd misc msgs examples yvalve utilit
 @mkdir %FB_GEN_DIR%\auth\SecurityDatabase 2>nul
 @mkdir %FB_GEN_DIR%\gpre\std 2>nul
 
+@mkdir %FB_OUTPUT_DIR%\include\firebird\impl 2>nul
+
 call :interfaces
 if "%ERRLEV%"=="1" goto :END
 
@@ -282,21 +284,6 @@ if errorlevel 1 goto :msgs2
 :msgs2
 echo.
 echo Error building build_msg, see build_msg_%FB_TARGET_PLATFORM%.log
-echo.
-set ERRLEV=1
-goto :EOF
-
-::===================
-:: BUILD codes
-:codes
-@echo.
-@echo Building codes (%FB_OBJ_DIR%)...
-@call compile.bat builds\win32\%VS_VER%\FirebirdBoot codes_%FB_TARGET_PLATFORM%.log codes
-if errorlevel 1 goto :codes2
-@goto :EOF
-:codes2
-echo.
-echo Error building codes, see codes_%FB_TARGET_PLATFORM%.log
 echo.
 set ERRLEV=1
 goto :EOF

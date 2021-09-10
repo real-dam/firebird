@@ -131,7 +131,7 @@
 #include <unistd.h>
 #endif
 
-#include "gen/iberror.h"
+#include "iberror.h"
 
 // Pick up system relation ids
 #include "../jrd/ini.h"

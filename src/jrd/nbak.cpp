@@ -40,7 +40,7 @@
 #include "cch_proto.h"
 #include "../common/isc_proto.h"
 #include "os/pio_proto.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "../yvalve/gds_proto.h"
 #include "../common/os/guid.h"
 #include "../common/os/isc_i_proto.h"

@@ -41,7 +41,7 @@
 #include "../jrd/req.h"
 #include "../jrd/tra.h"
 #include "../jrd/intl.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "../jrd/lck.h"
 #include "../jrd/cch.h"
 #include "../jrd/sort.h"
@@ -3443,9 +3443,9 @@ static ULONG fast_load(thread_db* tdbb,
 
 		// Detect the case when set of duplicate keys contains more then one key
 		// from primary record version. It breaks the unique constraint and must
-		// be rejected. Note, it is not always could be detected while sorting. 
-		// Set to true when primary record version is found in current set of 
-		// duplicate keys.		
+		// be rejected. Note, it is not always could be detected while sorting.
+		// Set to true when primary record version is found in current set of
+		// duplicate keys.
 		bool primarySeen = false;
 
 		while (!error)
@@ -6405,7 +6405,7 @@ static bool scan(thread_db* tdbb, UCHAR* pointer, RecordBitmap** bitmap, RecordB
 								break;
 
 							// node contains more bytes than a key, check numbers
-							// of last key segment and current node segment.  
+							// of last key segment and current node segment.
 
 							fb_assert(!descending);
 							fb_assert(p - STUFF_COUNT - 1 >= key->key_data);
@@ -6415,7 +6415,7 @@ static bool scan(thread_db* tdbb, UCHAR* pointer, RecordBitmap** bitmap, RecordB
 
 							fb_assert(keySeg <= nodeSeg);
 
-							// If current segment at node is the same as last segment 
+							// If current segment at node is the same as last segment
 							// of the key then node > key.
 							if (keySeg == nodeSeg)
 								return false;

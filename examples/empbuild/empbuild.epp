@@ -24,15 +24,15 @@
 #include "ibase.h"
 
 /* Some #defines that are used in the program - they actually come from
-   jrd/common.h but should not be exposed externally with those name so 
+   jrd/common.h but should not be exposed externally with those name so
    are reproduced here MOD 15-07-2001
 */
 typedef char TEXT;
 #define FINI_OK 0
 #define FINI_ERROR 44
 
-/* 
-**  Empbuild.e   GPRE with manual switch, since it creates the database 
+/*
+**  Empbuild.epp   GPRE with manual switch, since it creates the database
 **		This program then calls isql with various input files
 **		It installs the blobs and arrays.
 **		Usage:  empbuild <db name>
@@ -75,21 +75,21 @@ else
 
 printf ("creating database %s\n", Db_name);
 sprintf (cmd, "CREATE DATABASE \"%s\"", Db_name);
-gds__trans = 0;
+gds_trans = 0;
 
 EXEC SQL EXECUTE IMMEDIATE :cmd;
 if (SQLCODE)
     {
-    isc_print_status (gds__status);
+    isc_print_status (gds_status);
     exit (FINI_ERROR);
     }
 
-gds__trans = 0;
+gds_trans = 0;
 
 EXEC SQL DISCONNECT ALL;
 if (SQLCODE)
     {
-    isc_print_status (gds__status);
+    isc_print_status (gds_status);
     exit (FINI_ERROR);
     }
 
@@ -136,19 +136,19 @@ if (system (cmd))
 EXEC SQL CONNECT DB;
 if (SQLCODE)
     {
-    isc_print_status (gds__status);
+    isc_print_status (gds_status);
     exit (FINI_ERROR);
     }
 
-// What is/was the point of this? 
+// What is/was the point of this?
 // Each of the functions below start their own txn.
 //EXEC SQL SET TRANSACTION;
 
 printf ("Loading Language arrays\n");
-if ( addlang() ) 
+if ( addlang() )
 	{
     printf ("Couldn't load Language arrays\n");
-	EXEC SQL DISCONNECT DB;	
+	EXEC SQL DISCONNECT DB;
     exit (FINI_ERROR);
     }
 
@@ -156,15 +156,15 @@ printf ("Loading Job blobs\n");
 if ( addjob() )
 	{
     printf ("Couldn't load Job blobs\n");
-	EXEC SQL DISCONNECT DB;	
+	EXEC SQL DISCONNECT DB;
     exit (FINI_ERROR);
     }
 
 printf ("Loading project blobs \n");
-if ( addproj() ) 
+if ( addproj() )
 	{
     printf ("Couldn't load project blobs\n");
-	EXEC SQL DISCONNECT DB;	
+	EXEC SQL DISCONNECT DB;
     exit (FINI_ERROR);
     }
 
@@ -172,7 +172,7 @@ printf ("Loading quarter arrays \n");
 if ( addqtr() )
 	{
     printf ("Couldn't load quarter arrays\n");
-	EXEC SQL DISCONNECT DB;	
+	EXEC SQL DISCONNECT DB;
     exit (FINI_ERROR);
     }
 
@@ -215,7 +215,7 @@ while (fgets (line, 100, Fp) != NULL)
 	    break;
 	strcpy (lang_array [i], line);
 	}
-		
+
     EXEC SQL
 	UPDATE job
 	    SET language_req = :lang_array
@@ -237,11 +237,11 @@ printf ("Added %d language arrays.\n", rec_cnt);
 fclose (Fp);
 
 return (0);
-		
+
 Error:
 
 printf ("SQLCODE=%ld\n", (long)SQLCODE);
-isc_print_status (gds__status);
+isc_print_status (gds_status);
 EXEC SQL ROLLBACK;
 return (1);
 }
@@ -314,11 +314,11 @@ printf ("Added %d job requirement descriptions.\n", rec_cnt);
 fclose (Fp);
 
 return (0);
-	
+
 Error:
 
 printf ("SQLCODE=%ld\n", (long)SQLCODE);
-isc_print_status (gds__status);
+isc_print_status (gds_status);
 EXEC SQL ROLLBACK;
 
 return (1);
@@ -389,11 +389,11 @@ printf ("Added %d project descriptions.\n", rec_cnt);
 fclose (Fp);
 
 return (0);
-		
+
 Error:
 
 printf ("SQLCODE=%ld\n", (long)SQLCODE);
-isc_print_status (gds__status);
+isc_print_status (gds_status);
 EXEC SQL ROLLBACK;
 
 return (1);
@@ -450,11 +450,11 @@ printf ("Added %d quarter arrays.\n", rec_cnt);
 fclose (Fp);
 
 return (0);
-		
+
 Error:
 
 printf ("SQLCODE=%ld\n", (long)SQLCODE);
-isc_print_status (gds__status);
+isc_print_status (gds_status);
 EXEC SQL ROLLBACK;
 
 return (1);

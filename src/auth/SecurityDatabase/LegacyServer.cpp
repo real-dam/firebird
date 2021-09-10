@@ -26,7 +26,7 @@
 #include "firebird.h"
 
 #include "ibase.h"
-#include "gen/iberror.h"
+#include "iberror.h"
 #include "firebird/Interface.h"
 
 #include "../auth/SecurityDatabase/LegacyServer.h"

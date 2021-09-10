@@ -164,7 +164,7 @@ int EXTRACT_ddl(LegacyTables flag, const SCHAR* tabname)
 		if (EXTRACT_list_table(tabname, NULL, true, default_char_set_id))
 		{
 			SCHAR errbuf[MSG_LENGTH];
-			IUTILS_msg_get(NOT_FOUND_MSG, errbuf, SafeArg() << tabname);
+			IUTILS_msg_get(NOT_FOUND, errbuf, SafeArg() << tabname);
 			STDERROUT(errbuf);
 			ret_code = FINI_ERROR;
 		}

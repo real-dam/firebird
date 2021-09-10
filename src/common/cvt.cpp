@@ -41,7 +41,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include "gen/iberror.h"
+#include "iberror.h"
 
 #include "../jrd/constants.h"
 #include "../common/intlobj_new.h"

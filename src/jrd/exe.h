@@ -38,7 +38,7 @@
 #include "../jrd/MetaName.h"
 #include "../common/classes/NestConst.h"
 
-#include "gen/iberror.h"
+#include "iberror.h"
 
 #include "../common/dsc.h"
 #include "../jrd/rse.h"
