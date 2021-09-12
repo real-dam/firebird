@@ -108,6 +108,11 @@ PLUSPLUS_FLAGS:= -fno-rtti -std=c++17
 # If this is defined then we use special rules useful for developers only
 IsDeveloper = @DEVEL_FLG@
 
+RegenCodes = @REGEN_CODES_FLG@
+ifeq ($(IsDeveloper),Y)
+RegenCodes := Y
+endif
+
 CpuType=@CPU_TYPE@
 PLATFORM=@PLATFORM@
 SFIO_EXAMPLES=@SFIO_EXAMPLES@

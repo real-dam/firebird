@@ -529,6 +529,16 @@ AC_ARG_ENABLE(developer,
    esac])
 AC_SUBST(DEVEL_FLG)
 
+REGEN_CODES_FLG=$DEVEL_FLG
+AC_ARG_ENABLE(regen-codes,
+  [  --enable-regen-codes    re-generate codes (default same as --enable developer)],
+  [case "$enableval" in
+     yes) REGEN_CODES_FLG=Y;;
+     no)  REGEN_CODES_FLG=N;;
+     *)   AC_MSG_ERROR(bad value '${enableval}' for --enable-regen-codes);;
+   esac])
+AC_SUBST(REGEN_CODES_FLG)
+
 CROSS=
 IS_CROSS=N
 AC_ARG_WITH(cross-build,

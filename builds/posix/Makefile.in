@@ -286,7 +286,7 @@ master_process:
 # even if gpre itself was not rebuilt
 	-$(RM) $(GPRE_CURRENT)
 	(cd $(BIN); $(LN) $(notdir $(GPRE)) $(notdir $(GPRE_CURRENT)))
-ifeq ($(IsDeveloper), Y)
+ifeq ($(RegenCodes),Y)
 # In developer mode we must regenerate various files in include/gen
 	$(MAKE) codes
 endif
