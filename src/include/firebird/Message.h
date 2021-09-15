@@ -25,7 +25,15 @@
 
 #include "ibase.h"
 #include "./Interface.h"
+#if defined USE_SYSTEM_BOOST
+#include <boost/preprocessor/seq/for_each_i.hpp>
+#define FB_BOOST_PP_CAT(a,b) BOOST_PP_CAT(a,b)
+#define FB_BOOST_PP_SEQ_FOR_EACH_I(macro,data,seq) BOOST_PP_SEQ_FOR_EACH_I(macro,data,seq)
+#define FB_BOOST_PP_SEQ_SIZE(req) BOOST_PP_SEQ_SIZE(req)
+#define FB_BOOST_PP_TUPLE_ELEM(size,index,tuple) BOOST_PP_TUPLE_ELEM(size,index,tuple)
+#else
 #include "./impl/boost/preprocessor/seq/for_each_i.hpp"
+#endif
 #include <assert.h>
 #include <string.h>
 

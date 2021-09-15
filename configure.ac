@@ -560,6 +560,12 @@ AC_ARG_WITH(system-re2,
   [RE2_BUILD=N])
 AC_SUBST(RE2_BUILD)
 
+LOCAL_BOOST=Y
+AC_ARG_WITH(system-boost,
+  [  --with-system-bools     use system-wide boost library instead of embedded copy],
+  [LOCAL_BOOST=N])
+AC_SUBST(LOCAL_BOOST)
+
 dnl Avoid dumb '-g -O2' autoconf's default
 dnl Debugging information and optimization flags should be set in prefix.$platform file
 dnl Should be replaced with AC_PROG_GCC_DEFAULT_FLAGS() when available
@@ -616,6 +622,7 @@ if test "$LSB_FLG" = "Y"; then
   AC_SUBST(TOMMATH_BUILD, Y)
   AC_SUBST(TOMCRYPT_BUILD, Y)
   AC_SUBST(RE2_BUILD, Y)
+  AC_SUBST(LOCAL_BOOST, Y)
   AC_PATH_PROG(CC, lsbcc, "", [$PATH$PATH_SEPARATOR/opt/lsb/bin$PATH_SEPARATOR])
   AC_PATH_PROG(CXX, lsbc++, "", [$PATH$PATH_SEPARATOR/opt/lsb/bin$PATH_SEPARATOR])
   if test "x$CC" = "x" || test "x$CXX" = "x" ; then
