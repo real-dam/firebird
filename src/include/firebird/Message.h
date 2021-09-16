@@ -25,7 +25,7 @@
 
 #include "ibase.h"
 #include "./Interface.h"
-#if defined USE_SYSTEM_BOOST
+#if defined FB_USE_SYSTEM_BOOST
 #include <boost/preprocessor/seq/for_each_i.hpp>
 #define FB_BOOST_PP_CAT(a,b) BOOST_PP_CAT(a,b)
 #define FB_BOOST_PP_SEQ_FOR_EACH_I(macro,data,seq) BOOST_PP_SEQ_FOR_EACH_I(macro,data,seq)

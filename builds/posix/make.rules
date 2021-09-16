@@ -47,7 +47,7 @@ ifeq ($(RE2_BUILD_FLG),Y)
 endif
 
 ifneq ($(LOCAL_BOOST_FLG),Y)
- WFLAGS += -DUSE_SYSTEM_BOOST
+ WFLAGS += -DFB_USE_SYSTEM_BOOST
 endif
 
 ifeq ($(LSB_FLG),Y)
