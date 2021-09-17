@@ -670,6 +670,11 @@ $(INCLUDE_DEST)/ib_util.h : $(SRC_OtherDistribHeaders)
 	mkdir -p $(INCLUDE_DEST)
 	$(CP) $^ $(INCLUDE_DEST)/
 
+ifeq ($(SYSTEM_BOOST_FLG),Y)
+$(INCLUDE_DEST)/firebird/Message.h : $(SRC_ROOT)/include/firebird/Message.h
+	sed 's,^#include "\./impl/boost/\(.\+\)",#include <boost/\1>,; s/\bFB_BOOST_PP_/BOOST_PP_/g' $< > $@
+endif
+
 $(INCLUDE_DEST)/firebird/%: $(SRC_ROOT)/include/firebird/%
 	mkdir -p $(@D)
 	$(CP) $< $@
