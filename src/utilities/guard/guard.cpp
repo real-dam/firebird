@@ -163,10 +163,30 @@ int CLIB_ROUTINE main( int argc, char **argv)
 		exit(-5);
 	}
 
+	sigset_t ss, save_sig_mask;
+	sigemptyset(&ss);
+	sigaddset(&ss, SIGUSR1);
+	sigprocmask(SIG_BLOCK, &ss, &save_sig_mask);
+	pid_t guard_pid = getpid();
+
 	// detach from controlling tty
 	if (daemon && fork()) {
+		int sig;
+
+		struct timespec ts = { .tv_sec=15, .tv_nsec= 0 };
+		do {
+			sig = sigtimedwait( &ss, NULL, &ts );
+		} while ( sig == EINTR );
+
+		if ( sig != SIGUSR1 ) {
+			fprintf( stderr, "Time out waiting for fbserver process start\n");
+			exit(-4);
+		}
+
 		exit(0);
 	}
+
+	sigprocmask(SIG_SETMASK, &save_sig_mask, NULL);
 
 	// Keep stdout and stderr opened and let server emit output
 	// or redirect stdout/stderr to /dev/null or file by user choice
@@ -176,6 +196,7 @@ int CLIB_ROUTINE main( int argc, char **argv)
 	divorce_terminal(mask);
 
 	time_t timer = 0;
+	bool first_start = true;
 
 	do {
 		int ret_code;
@@ -193,6 +214,18 @@ int CLIB_ROUTINE main( int argc, char **argv)
 			continue;
 		}
 		timer = time(0);
+
+		if (first_start)
+		{
+			char pid[20];
+			snprintf(pid, sizeof(pid), "%d", guard_pid);
+			setenv("FB_SIGNAL_PROCESS", pid, 1);
+			first_start = false;
+		}
+		else
+		{
+			unsetenv("FB_SIGNAL_PROCESS");
+		}
 
 		pid_t child_pid =
 			UTIL_start_process(SERVER_BINARY, server_args, prog_name);

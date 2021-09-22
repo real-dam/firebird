@@ -1168,6 +1168,12 @@ static rem_port* listener_socket(rem_port* port, USHORT flag, const addrinfo* pa
 
 	inet_ports->registerPort(port);
 
+	char *parent_pid;
+	if (parent_pid = getenv("FB_SIGNAL_PROCESS"))
+	{
+		kill(atoi(parent_pid), SIGUSR1);
+	}
+
 	if (flag & SRVR_multi_client)
 	{
 		// Prevent the generation of dummy keepalive packets on the connect port.
