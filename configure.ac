@@ -1071,7 +1071,15 @@ AC_LINK_IFELSE(
 AC_LANG_POP(C++)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
-AC_C_BIGENDIAN
+AC_C_BIGENDIAN(
+	[
+		AC_DEFINE(WORDS_BIGENDIAN,1,[Words have most significant byte first])
+		AC_SUBST(TZDATA_ZIP,be.zip)
+	],
+	[
+		AC_SUBST(TZDATA_ZIP,le.zip)
+	]
+)
 AC_C_VOLATILE
 AC_TYPE_OFF_T
 AC_TYPE_SIZE_T

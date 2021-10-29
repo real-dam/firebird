@@ -636,10 +636,9 @@ $(FIREBIRD_MSG) $(FIREBIRD)/include/firebird/impl/iberror_c.h:	$(BUILD_FILE)
 
 tzdata: $(FIREBIRD)/tzdata
 
-# FIXME: For big-endian, be.zip must be used.
-$(FIREBIRD)/tzdata: $(ROOT)/extern/icu/tzdata/le.zip
+$(FIREBIRD)/tzdata: $(ROOT)/extern/icu/tzdata/$(TZDATA_ZIP)
 	mkdir -p $(FIREBIRD)/tzdata
-	unzip -o $(ROOT)/extern/icu/tzdata/le.zip -d $(FIREBIRD)/tzdata
+	unzip -o $(ROOT)/extern/icu/tzdata/$(TZDATA_ZIP) -d $(FIREBIRD)/tzdata
 
 $(BUILD_FILE):	$(BUILD_Objects)
 	$(EXE_LINK) $(EXE_LINK_OPTIONS) $(LSB_UNDEF) $^ -o $@
