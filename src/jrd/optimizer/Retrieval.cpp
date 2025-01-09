@@ -1473,21 +1473,21 @@ InversionCandidate* Retrieval::makeInversion(InversionCandidateList& inversions)
 					invCandidate->nonFullMatchedSegments = 0;
 					invCandidate->matchedSegments = currentInv->matchedSegments;
 					invCandidate->dependencies = currentInv->dependencies;
-					matches.clear();
 
 					for (const auto currentMatch : currentInv->matches)
 					{
-						if (!matches.exist(currentMatch))
-							matches.add(currentMatch);
+						if (!invCandidate->matches.exist(currentMatch))
+							invCandidate->matches.add(currentMatch);
 					}
 
-					if (currentInv->boolean)
+					if (const auto currentMatch = currentInv->boolean)
 					{
-						if (!matches.exist(currentInv->boolean))
-							matches.add(currentInv->boolean);
+						if (!invCandidate->matches.exist(currentMatch))
+							invCandidate->matches.add(currentMatch);
 					}
 
-					invCandidate->matches.join(matches);
+					matches.assign(invCandidate->matches);
+
 					if (customPlan)
 						continue;
 
@@ -1661,16 +1661,19 @@ InversionCandidate* Retrieval::makeInversion(InversionCandidateList& inversions)
 					invCandidate->dependencies = bestCandidate->dependencies;
 					invCandidate->condition = bestCandidate->condition;
 
-					for (FB_SIZE_T j = 0; j < bestCandidate->matches.getCount(); j++)
+					for (const auto bestMatch : bestCandidate->matches)
 					{
-						if (!matches.exist(bestCandidate->matches[j]))
-							matches.add(bestCandidate->matches[j]);
+						if (!invCandidate->matches.exist(bestMatch))
+							invCandidate->matches.add(bestMatch);
 					}
-					if (bestCandidate->boolean)
+
+					if (const auto bestMatch = bestCandidate->boolean)
 					{
-						if (!matches.exist(bestCandidate->boolean))
-							matches.add(bestCandidate->boolean);
+						if (!invCandidate->matches.exist(bestMatch))
+							invCandidate->matches.add(bestMatch);
 					}
+
+					matches.join(invCandidate->matches);
 				}
 				else if (!bestCandidate->condition)
 				{
@@ -1697,15 +1700,17 @@ InversionCandidate* Retrieval::makeInversion(InversionCandidateList& inversions)
 
 					for (const auto bestMatch : bestCandidate->matches)
 					{
-						if (!matches.exist(bestMatch))
-	                        matches.add(bestMatch);
+						if (!invCandidate->matches.exist(bestMatch))
+							invCandidate->matches.add(bestMatch);
 					}
 
-					if (bestCandidate->boolean)
+					if (const auto bestMatch = bestCandidate->boolean)
 					{
-						if (!matches.exist(bestCandidate->boolean))
-							matches.add(bestCandidate->boolean);
+						if (!invCandidate->matches.exist(bestMatch))
+							invCandidate->matches.add(bestMatch);
 					}
+
+					matches.join(invCandidate->matches);
 				}
 
 				if (invCandidate->unique)
@@ -1739,10 +1744,13 @@ InversionCandidate* Retrieval::makeInversion(InversionCandidateList& inversions)
 		invCandidate->cost += navigationCandidate->cost;
 		++invCandidate->indexes;
 		invCandidate->navigated = true;
-	}
 
-	if (invCandidate)
-		invCandidate->matches.join(matches);
+		for (const auto navMatch : navigationCandidate->matches)
+		{
+			if (!invCandidate->matches.exist(navMatch))
+				invCandidate->matches.add(navMatch);
+		}
+	}
 
 	return invCandidate;
 }
