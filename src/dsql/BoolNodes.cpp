@@ -2176,16 +2176,20 @@ BoolExprNode* RseBoolNode::convertNeqAllToNotAny(thread_db* tdbb, CompilerScratc
 
 	andNode->arg1 = missNode;
 
+	RseNode* newInnerRse1 = innerRse->clone(csb->csb_pool);
+	newInnerRse1->flags |= RseNode::FLAG_SUB_QUERY;
+
 	RseBoolNode* rseBoolNode = FB_NEW_POOL(csb->csb_pool) RseBoolNode(csb->csb_pool, blr_any);
-	rseBoolNode->rse = innerRse;
+	rseBoolNode->rse = newInnerRse1;
 	rseBoolNode->ownSavepoint = this->ownSavepoint;
 
 	andNode->arg2 = rseBoolNode;
 
-	RseNode* newInnerRse = innerRse->clone(csb->csb_pool);
+	RseNode* newInnerRse2 = innerRse->clone(csb->csb_pool);
+	newInnerRse2->flags |= RseNode::FLAG_SUB_QUERY;
 
 	rseBoolNode = FB_NEW_POOL(csb->csb_pool) RseBoolNode(csb->csb_pool, blr_any);
-	rseBoolNode->rse = newInnerRse;
+	rseBoolNode->rse = newInnerRse2;
 	rseBoolNode->ownSavepoint = this->ownSavepoint;
 
 	orNode->arg2 = rseBoolNode;
@@ -2201,16 +2205,16 @@ BoolExprNode* RseBoolNode::convertNeqAllToNotAny(thread_db* tdbb, CompilerScratc
 	outerRseNeq->blrOp = blr_eql;
 
 	// If there was a boolean on the stream, append (AND) the new one
-	if (newInnerRse->rse_boolean)
+	if (newInnerRse2->rse_boolean)
 	{
 		andNode = FB_NEW_POOL(csb->csb_pool) BinaryBoolNode(csb->csb_pool, blr_and);
 
-		andNode->arg1 = newInnerRse->rse_boolean;
+		andNode->arg1 = newInnerRse2->rse_boolean;
 		andNode->arg2 = boolean;
 		boolean = andNode;
 	}
 
-	newInnerRse->rse_boolean = boolean;
+	newInnerRse2->rse_boolean = boolean;
 
 	SubExprNodeCopier copier(csb->csb_pool, csb);
 	return copier.copy(tdbb, static_cast<BoolExprNode*>(newNode));
