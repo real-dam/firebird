@@ -1494,45 +1494,69 @@ InversionCandidate* Retrieval::makeInversion(InversionCandidateList& inversions)
 					return invCandidate;
 				}
 
-				// Look if a match is already used by previous matches.
-				bool anyMatchAlreadyUsed = false, matchUsedByNavigation = false;
-				for (const auto currentMatch : currentInv->matches)
+				if (!customPlan)
 				{
-					if (matches.exist(currentMatch))
-					{
-						anyMatchAlreadyUsed = true;
+					// Look if a match is already used by previous matches
+					bool anyMatchAlreadyUsed = false, matchUsedByNavigation = false;
 
-						if (navigationCandidate &&
-							navigationCandidate->matches.exist(currentMatch))
-						{
-							matchUsedByNavigation = true;
-						}
-
-						break;
-					}
-				}
-
-				if (currentInv->boolean && matches.exist(currentInv->boolean))
-					anyMatchAlreadyUsed = true;
-
-				if (anyMatchAlreadyUsed && !customPlan)
-				{
-					currentInv->used = true;
-
-					if (matchUsedByNavigation)
-						continue;
-
-					// If a match on this index was already used by another
-					// index, add also the other matches from this index.
 					for (const auto currentMatch : currentInv->matches)
 					{
-						if (!matches.exist(currentMatch))
-							matches.add(currentMatch);
+						if (matches.exist(currentMatch))
+						{
+							anyMatchAlreadyUsed = true;
+
+							if (navigationCandidate &&
+								navigationCandidate->matches.exist(currentMatch))
+							{
+								matchUsedByNavigation = true;
+							}
+
+							break;
+						}
 					}
 
-					// Restart loop, because other indexes could also be excluded now.
-					restartLoop = true;
-					break;
+					if (const auto currentMatch = currentInv->boolean)
+					{
+						if (matches.exist(currentMatch))
+						{
+							anyMatchAlreadyUsed = true;
+
+							if (navigationCandidate &&
+								navigationCandidate->matches.exist(currentMatch))
+							{
+								matchUsedByNavigation = true;
+							}
+						}
+						else if (matchUsedByNavigation)
+							anyMatchAlreadyUsed = false;
+					}
+
+					// If some match was already used by another index, skip this index
+
+					if (anyMatchAlreadyUsed)
+					{
+						if (!matchUsedByNavigation)
+						{
+							// Add the other matches from this index
+
+							for (const auto currentMatch : currentInv->matches)
+							{
+								if (!matches.exist(currentMatch))
+									matches.add(currentMatch);
+							}
+
+							if (const auto currentMatch = currentInv->boolean)
+							{
+								if (!matches.exist(currentMatch))
+									matches.add(currentMatch);
+							}
+						}
+
+						// Restart loop, because other indexes could also be excluded now
+						currentInv->used = true;
+						restartLoop = true;
+						break;
+					}
 				}
 
 				if (!bestCandidate)
