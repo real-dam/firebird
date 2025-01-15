@@ -922,7 +922,7 @@ public:
 	RecordSource* generate();
 
 private:
-	RecordSource* process(const JoinType joinType);
+	RecordSource* process(StreamList* outerStreams = nullptr);
 
 	thread_db* const tdbb;
 	Optimizer* const optimizer;
