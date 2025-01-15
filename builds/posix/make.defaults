@@ -101,8 +101,8 @@ GLOB_OPTIONS:=
 
 #____________________________________________________________________________
 
-# Firebird needs no RTTI
-RTTI_FLAG:= -fno-rtti
+# Firebird needs no RTTI, make it build with icu-75.1
+RTTI_FLAG:= -fno-rtti -DU_SHOW_CPLUSPLUS_API=0
 
 # If this is defined then we use special rules useful for developers only
 IsDeveloper = @DEVEL_FLG@
