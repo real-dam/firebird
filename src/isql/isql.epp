@@ -4993,7 +4993,7 @@ static processing_state frontend(const std::string& statement)
 					true);
 			}
 
-			return SKIP;
+			return ret;
 		},
 
 		[](const FrontendParser::CopyNode& node)
